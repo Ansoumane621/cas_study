@@ -1,0 +1,12 @@
+torch>=2.2
+transformers>=4.45
+accelerate>=0.33
+datasets>=2.20
+peft>=0.12
+trl>=0.10
+pandas>=2.0
+typer>=0.12
+huggingface_hub>=0.24
+tensorboard>=2.16
+matplotlib>=3.8
+PyYAML>=6.0

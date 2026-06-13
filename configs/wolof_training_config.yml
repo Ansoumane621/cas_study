@@ -1,0 +1,88 @@
+# Wolof LoRA training configuration.
+# Ratios are decimal fractions: 0.05 means 5%, not 0.05%.
+seed: 42
+
+splits:
+  validation_ratio: 0.05
+  eval_ratio: 0.05
+  note: "validation/eval are stratified per source family"
+
+model:
+  model_choice: qwen
+  alternatives:
+    - qwen
+    - gemma
+
+training:
+  epochs: 3
+  batch_size: 1
+  grad_accum: 8
+  max_seq_length: 1024
+  learning_rate: 0.0001
+  warmup_steps: 50
+  weight_decay: 0.01
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  logging_steps: 10
+  save_steps: 100
+  save_total_limit: 5
+  eval_steps: 100
+
+data_sources:
+  - name: aya
+    description: "Aya Wolof instruction/translation examples"
+    raw_path: data/wolof_aya.jsonl
+    chat_path: data/chat_aya.json
+    default_category: language
+    examples: 40
+    train_examples: 36
+    validation_examples: 2
+    eval_examples: 2
+  - name: soynade
+    description: "Wolof non-standard orthography normalization examples"
+    raw_path: data/wolof_soynade.jsonl
+    chat_path: data/chat_soynade.json
+    default_category: orthography
+    examples: 30
+    train_examples: 26
+    validation_examples: 2
+    eval_examples: 2
+  - name: synth
+    description: "Local synthetic Senegal/Africa classroom instruction examples"
+    raw_path: data/wolof_synth.jsonl
+    chat_path: data/chat_synth.json
+    default_category: synthetic
+    examples: 5300
+    train_examples: 4770
+    validation_examples: 265
+    eval_examples: 265
+
+training_data:
+  - name: aya
+    path: data/splits/chat_aya_train.json
+    weight: 1.0
+  - name: soynade
+    path: data/splits/chat_soynade_train.json
+    weight: 1.0
+  - name: synth
+    path: data/splits/chat_synth_train.json
+    weight: 1.0
+
+validation_data:
+  - name: aya
+    path: data/splits/chat_aya_validation.json
+  - name: soynade
+    path: data/splits/chat_soynade_validation.json
+  - name: synth
+    path: data/splits/chat_synth_validation.json
+
+eval_data:
+  combined_path: data/splits/eval_all.jsonl
+  sources:
+    - name: aya
+      path: data/splits/chat_aya_eval.json
+    - name: soynade
+      path: data/splits/chat_soynade_eval.json
+    - name: synth
+      path: data/splits/chat_synth_eval.json
